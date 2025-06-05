@@ -10,11 +10,6 @@ app = FastAPI()
 # Starting data
 db: List[Book] = sample_books
 
-# Home page
-@app.get("/")
-async def read_root():
-    return {"message": "Welcome to the Book Library API!"}
-
 # Get Book by ID
 @app.get("/api/books/{book_id}", response_model=Book)
 async def get_book_by_id(book_id: UUID):
