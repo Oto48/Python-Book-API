@@ -3,29 +3,25 @@ from typing import List
 from models import Book, BookCreate
 from uuid import UUID
 from fastapi import HTTPException
+from sample_data import sample_books
 
 app = FastAPI()
 
 # Starting data
-db: List[Book] = [
-    Book(
-        title="1984",
-        author="George Orwell",
-        year=1949,
-        genre="Dystopian"
-    ),
-    Book(
-        title="To Kill a Mockingbird",
-        author="Harper Lee",
-        year=1960,
-        genre="Fiction"
-    )
-]
+db: List[Book] = sample_books
 
 # Home page
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to the Book Library API!"}
+
+# Get Book by ID
+@app.get("/api/books/{book_id}", response_model=Book)
+async def get_book_by_id(book_id: UUID):
+    for book in db:
+        if book.id == book_id:
+            return book
+    raise HTTPException(status_code=404, detail=f"Book with id: {book_id} not found")
 
 # Get the list of Books
 @app.get("/api/books", response_model=List[Book])
