@@ -43,3 +43,13 @@ async def delete_book(book_id: UUID):
             del db[index]
             return {"message": "Book deleted successfully"}
     raise HTTPException(status_code=404, detail=f"Book with id: {book_id} not found")
+
+# Update Book by id
+@app.put("/api/books/{book_id}", response_model=Book)
+async def update_book(book_id: UUID, updated_data: BookCreate):
+    for index, book in enumerate(db):
+        if book.id == book_id:
+            updated_book = Book(id=book_id, **updated_data.model_dump())
+            db[index] = updated_book
+            return updated_book
+    raise HTTPException(status_code=404, detail=f"Book with id: {book_id} not found")
